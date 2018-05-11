@@ -1,5 +1,5 @@
 {
-  "name": "dsn-cp-app",
+  "name": "cp-app",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -32,6 +32,7 @@
     "@types/jasmine": "~2.8.3",
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
+    "bootstrap": "^3.3.5",
     "codelyzer": "^4.0.1",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",

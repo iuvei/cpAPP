@@ -1,0 +1,77 @@
+<div class="head">
+    <a class="arrow" href="/Index/main/">
+        <img src="/assets/images/back.jpg" style=" height: 18px;">
+    </a>
+    <div class="hade_title" (click)="ctrlSlideDiv()">
+        <span id="hade_title">{{gameName_cn}}</span>
+        <img src="/assets/images/up.jpg">
+    </div>
+    <div style="position: absolute; right: 0px; top: 0px; float: right;width: 110px;text-align: right; padding: 0;font-size: 16px;">
+        <a href="/Index/ltbill/">
+            <button type="button" style="font-size: 12px;margin-top: 13px;" class="btn btn-primary">我的彩票</button>
+        </a>
+    </div>
+</div>
+<div class="slide_div" [@headAnimate]='slideState'>
+    <div class="slide_bj"></div>
+    <div class="slide_con">
+        <div class="slide_tab">
+            <a *ngFor='let method of methodList' [class.active]='method.id==currentMethodId' (click)="switchMethod(method.id)" name="{{method.name_en}}">{{method.name_cn | slice:0:2}}</a>
+        </div>
+        <div class="choose_con">
+            <div class="check" name="num_rx">
+                <div class="che_div">
+                    <a *ngFor='let play of currentPlayArr' (click)='switchPlay(play.id)'  name="{{play.name_cn}}">{{play.name_cn}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="top_title">
+    <ul>
+        <li style="width:32%">
+            <p class="text-danger" style="line-height: 60px;font-size: 16px; text-align:center;">
+                <span id="hour_show" class="label label-primary">00</span>
+                <span id="minute_show" class="label label-primary">09</span>
+                <span id="second_show" class="label label-primary">49</span>
+            </p>
+            <!--  <div class="rad-prg" id="indicatorContainer9"></div> -->
+        </li>
+        <li style="width:40%">
+            <div style="margin-top:-10px">
+                <a id="numType" name="num3">任选</a>-
+                <a href="#" id="gameType" name="num3_h3zx" title="玩法说明:" data-container="body" data-toggle="popover" data-placement="bottom"
+                    data-content="从第一位、第二位、第三位中至少各选择1个号码。">一中一</a>
+            </div>
+            <div style="width:100%; float: left; margin-top: -37px;font-size: 14px;">
+                <p class="text-danger" style="color: #ee56a9;">
+                    <span id="qishu">20180504-035</span>期</p>
+            </div>
+        </li>
+        <li style="width:28%">
+            <a class="rand" href="#">
+                <button id="openlo" type="button" style="font-size: 10x;" class="btn btn-primary">开奖记录
+                    <span class="caret"></span>
+                </button>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="openContent" class="panel panel-danger" style="margin: 22px 0px 0px; padding: 0px; font-size: 10px; display: none;">
+    <div class="panel-heading">近期开奖记录</div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>期号</th>
+                <th>开奖号 </th>
+                <th>大小</th>
+                <th>单双</th>
+            </tr>
+        </thead>
+        <tbody id="tBody">
+            <tr>
+                <td colspan="4">没有数据...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

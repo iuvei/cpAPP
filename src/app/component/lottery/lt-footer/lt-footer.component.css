@@ -1,0 +1,6 @@
+.che_div a {margin:2px}
+.suminfo{height:55px; padding: 7px 3px; font-size: 14px; float: left}
+.suminfo span{color: #337AB7; padding: 0 5px;}
+.list1rec{height:80px; width:100%; padding: 10px 10px; border: 1px solid #e7e7e7;}
+.list1rec-remove{width:20%; font-size: 28px; color: red; padding-top: 10px; padding-left: 10px;float: left}
+.list1rec-info{width:78%;padding-top: 0px;float: left}

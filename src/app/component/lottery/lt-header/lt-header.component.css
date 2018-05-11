@@ -1,0 +1,21 @@
+.head a.arrow{
+    width: 50px;
+    text-align: center;
+    height: 60px;
+    line-height: 60px;
+    margin: 0;
+    padding: 0;
+    top: 0px;
+    left: 0px;
+}
+#acdialog {font-size: 16px;}
+.modal-title {font-size: 16px;}
+#acdialog button{font-size: 16px;}
+.nbs .nb{width: 240px; padding: 0px;}
+.slide_tab a{ width: 14.2%;}
+.threestar a{font-size: 14px}
+.top_title{position: fixed; top: 60px}
+.slide_div{
+    transition:all 1s;
+    -webkit-transition:all 2s; /* Safari and Chrome */
+}

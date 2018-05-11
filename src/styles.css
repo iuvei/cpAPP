@@ -1,1 +1,86 @@
 /* You can add global styles to this file, and also import other style files */
+*{ margin: 0; padding: 0;}
+body{ font-family: "微软雅黑"; margin: 0; padding: 0; background:#fff;}
+a,a:active,a:focus,a:hover{ text-decoration: none;}
+p,h1,h2,h3,h4,h5,h6,ul,li{ padding: 0; margin: 0;}
+img{ border: none;}
+ul,li{ list-style: none;}
+input[type="button"], input[type="submit"], input[type="reset"], input[type="text"] {
+    -webkit-appearance: none; font-family: "微软雅黑";
+}
+
+.wrap{ width:100%; margin: 0 auto; overflow: hidden; background: #fff; position: relative; padding-top: 60px;}
+.head{ background: #fff; width: 100%; height: 60px; position: fixed;text-align: center; top: 0;z-index: 998;}
+.slide_div{ display: none;height: 100%;width: 100%;  position: fixed; top: 0;z-index: 997;}
+.slide_bj{ background: #000;opacity: .5;width: 100%;   height: 100%; filter:alpha(opacity=50); position: absolute; top: 0; left: 0;}
+.slide_con{ background: #f3f3f3; overflow: hidden;width: 100%; position: absolute; top: 60px; left: 0; border-top: 3px solid #eaeaea;}
+.slide_tab{ width: 100%; overflow: hidden;border-bottom: 3px solid #eaeaea;}
+.slide_tab a{ display: block; float: left; width: 11.11%; text-align: center; font-size: 15px; color: #6e6e6e;line-height: 50px;}
+.slide_tab a.active{ color: #337AB7; font-size: 16px;}
+.choose_con{ overflow: hidden; padding: 8px 0;}
+.che_div{ padding: 5px 0; width: 100%; overflow: hidden;}
+.che_div span{ display: block; float: left; color: #337AB7; font-size: 16px;width: 140px;text-align: center;line-height: 66px;}
+.che_div a{ display:block; font-size:16px; float:left; line-height:30px; background:#fff; height:30px; padding:0 3px; margin:5px; border-radius:5px;color: #6e6e6e;}
+.che_div a.on{ background: #337AB7; color: #fff;}
+.clear{ clear: both;}
+.head a{ float: left;display: block;height: 60px;position: absolute;left: 30px;}
+.head .hade_title{overflow: hidden;}
+.head .hade_title span{ line-height: 60px;font-size: 18px;padding-right: 10px;color: #484848;vertical-align: middle;}
+
+
+.top_title{ width: 100%; overflow: hidden; background: #f3f3f3;border-bottom: 1px solid #eee;}
+.top_title li{ width: 33.33%; float: left; overflow: hidden; height: 60px; line-height: 60px; color: #505050; font-size: 16px; text-align: center;}
+.top_title li a{ color: #505050; font-size: 16px;}
+.top_title li a img{ padding-right: 5px;}
+.top_title li em{ font-style: normal; display: block;width: 50%;float: left;text-align: right;}
+.top_title li .rad-prg{ display: inline; float: left; width: 78px; height: 78px; border-radius: 34px; font-size: 16px; line-height: 60px; text-align: center; margin: 6px 0 0 15px; position: relative;}
+.choose_div{ width: 100%; padding: 10px 0; border-bottom: 1px solid #eee; overflow: hidden;}
+
+.choose_div .ti{ float: left; width: 60px;padding-top: 15px;}
+.choose_div .ti span{ display: block; height: 25px;width: 50px;line-height: 25px;font-size: 13px;color: #fff;text-align:center;margin: 0 auto; background: #337AB7;border-radius: 5px;}
+
+
+.nbs{ overflow:hidden; border-left: 1px solid #eee;}
+.nbs .to {height: auto; overflow: hidden; text-align:left;padding: 5px 0;}
+.nbs .to li {float: left; display: block; cursor: pointer;}
+.nbs .to ul {float:left; padding:0; margin:0;}
+.nbs .to li {margin: 0 3px; width: 33px; height: 33px; line-height: 33px; text-align: center; color:#6e6e6e; font-size: 13px;border: 1px solid #ccc;border-radius: 3px;}
+.nbs .to .on {color: #FFF;background-color: #FF9000;}
+
+.nbs .nb {padding: 0px 5px; height: 42px; width:230px; margin-right: 5px;}
+.nbs .nb div {background:#d3d4d6;width: 33px; height: 33px; text-align: center; color: #6e6e6e; line-height: 33px; font-size:16px;  text-decoration: none;  float: left; display: inline; cursor: pointer;margin: 3px;border-radius: 52px;}
+.nbs .nb .dansuang {background:#d3d4d6;width: 60px; height: 42px; text-align: center; color: #6e6e6e; line-height: 42px; font-size: 16px;  text-decoration: none;  float: left; display: inline; cursor: pointer;margin: 5px 5px;border-radius: 10px;}
+.nbs .nb .on {background:#337AB7; color: #fff;}
+.nbs .keno.nb div {background-position: -112px -80px; width: 30px; font-size: 15px;}
+.nbs .keno.nb .on {background-position: -112px -40px; color: rgb(255, 255, 255);}
+
+.fg{ width: 100%; height: 182px; overflow: hidden;}
+.fixed_bot{width: 100%;  position: fixed; bottom: 0; z-index: 996;}
+
+.reslut{  margin: 0 auto; overflow: hidden; background: #f6f6f6;border-bottom: 1px solid #eee;border-top: 1px solid #eee;}
+.reslut li{ width: 33.33%; float: left; overflow: hidden; height:60px; line-height: 60px; color: #505050; font-size: 16px; text-align: center; font-size: 16px;}
+
+.bottom{  margin: 0 auto; overflow: hidden; background: #e6e6e6;}
+.bottom li{ width: 33.33%; float: left; overflow: hidden; height: 60px; line-height: 60px; color: #6e6e6e; font-size: 16px; text-align: center; font-size: 16px;}
+.bottom li span{ color: #337AB7; padding: 0 5px;}
+.bottom li a img{ display: block; width: 90px; height: 40px; margin: 15px auto;}
+
+.insert_div{ width: 100%; overflow: hidden;}
+.inser_num{ width: 100%; margin: 15px auto; border: none; background: #f3f3f3; color: #bebebe; font-size: 16px; display: block; font-family: "微软雅黑"; border-radius: 10px; padding: 10px; height: 240px; line-height: 46px;}
+
+.right_li.to ul{ float: right; padding-right: 20px;}
+
+.top_cp{ width: 100%; height: 135px; overflow: hidden; background: #f3f3f3; position: relative; border-bottom: 1px solid #eee;}
+.top_cp h3{ color:#484848; font-size: 16x; padding: 12px 0 9px 30px; font-weight: normal;}
+.top_cp p{ padding-left: 30px;}
+.top_cp p span{ color:#484848; font-size: 16px; display: block; width: 50px; height: 50px; margin-right: 20px; background: #fff; float: left; text-align: center; line-height: 50px; border-radius: 25px;}
+.top_cp a{ display: block; position: absolute; right: 30px; top: 40px;}
+
+.cp_list{ margin-left: 38px; border-left: 1px solid #eee;}
+.cp_list li{ padding: 10px 0; border-bottom: 1px solid #eee; margin-left: 14px;}
+.cp_list li .title_t{ position: relative; padding-bottom: 15px; height: 44px; padding-left: 10px;}
+.cp_list li .title_t span{ position: absolute; left: -22px; top: 0; margin: 15px 10px 0 0; display: block; float: left; width: 14px; height: 14px; border-radius: 7px; background: #eba101;}
+.cp_list .title_t h3{ float: left; font-weight: normal; font-size: 16px; display: block; height: 44px; line-height: 44px;}
+.cp_list .wq_span{ overflow: hidden;}
+.cp_list .wq_span span{ display: inline; margin: 0 5px; background: #d3d4d6; width: 30px; height: 30px; text-align: center; line-height: 30px; color: #7d6d6d; font-size: 16px; border-radius: 25px; float: left;}
+#content{margin-top: 120px}
