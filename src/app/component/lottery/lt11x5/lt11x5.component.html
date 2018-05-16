@@ -1,5 +1,5 @@
-<app-lt-header [methodList]='methodList' [currentMethodId]='currentMethodId' [gameName_cn]='gameName_cn' [currentPlayArr]='currentPlayArr'></app-lt-header>
-<div id="content">
-	<app-yizhongyi ></app-yizhongyi>
+<app-lt-header currentPlayId='currentPlayId' (change)='playIdChange($event)' [methodList]='methodList' [currentMethodId]='currentMethodId' [gameName_cn]='gameName_cn' [currentPlayArr]='currentPlayArr'></app-lt-header>
+<div id="content" #playContainer>
+    <!-- <app-yizhongyi ></app-yizhongyi> -->
 </div>
 <app-lt-footer></app-lt-footer>

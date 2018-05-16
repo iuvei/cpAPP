@@ -1,12 +1,18 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+    Component, Input, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ComponentRef, OnDestroy,
+    ReflectiveInjector
+} from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-
+import { Lt11x5ComponentList } from '../../../config/dynamic-component-list';
+// import {  }
 @Component({
     selector: 'app-11x5',
     templateUrl: './lt11x5.component.html',
     styleUrls: ['./lt11x5.component.css']
 })
-export class Lt11x5Component implements OnInit {
+export class Lt11x5Component implements OnDestroy, OnInit {
+    @ViewChild('playContainer', { read: ViewContainerRef }) playContainer: ViewContainerRef;
+    compRef: ComponentRef<any>; //  加载的组件实例
     private lotteryId: number;
     protected gameConfig: any;
     public methodList: Array<any>;
@@ -16,7 +22,7 @@ export class Lt11x5Component implements OnInit {
     public currentMethodId: String; // 当前大玩法群ID
     public currentPlayId: String; // 当前小玩法ID
     public currentPlayArr: Array<any>; // 当前小玩法数组
-    constructor(private routerIonfo: ActivatedRoute) {
+    constructor(private routerIonfo: ActivatedRoute, private resolver: ComponentFactoryResolver) {
         this.gameConfig = {
             lotteryId: '1',
             gameName_cn: '山东11选5',
@@ -1165,9 +1171,25 @@ export class Lt11x5Component implements OnInit {
         this.currentGameId = this.gameConfig.lotteryId;
         this.gameName_cn = this.gameConfig.gameName_cn;
     }
-
+    createComponent() {
+        if (this.currentPlayId) {
+            const playID = this.currentPlayId;
+        } else {
+            const playID = '一中一';
+        }
+        const factory = this.resolver.resolveComponentFactory(Lt11x5ComponentList[playID]);
+        if (this.compRef) {
+            this.compRef.destroy();
+        }
+        this.compRef = this.playContainer.createComponent(factory); // 创建组件
+    }
     ngOnInit() {
         const self = this;
         this.routerIonfo.params.subscribe((params: Params) => this.lotteryId = params['lotteryId']);
+    }
+    ngOnDestroy() {
+        if (this.compRef) {
+            this.compRef.destroy();
+        }
     }
 }

@@ -12,14 +12,8 @@ import { LotteryComponent } from './component/lottery/lottery.component';
 import { Lt11x5Component } from './component/lottery/lt11x5/lt11x5.component';
 import { LtHeaderComponent } from './component/lottery/lt-header/lt-header.component';
 import { LtFooterComponent } from './component/lottery/lt-footer/lt-footer.component';
-import { YizhongyiComponent } from './component/lottery/lt11x5/renxuan/yizhongyi/yizhongyi.component';
-import { ErzhongerComponent } from './component/lottery/lt11x5/renxuan/erzhonger/erzhonger.component';
-import { SanzhongsanComponent } from './component/lottery/lt11x5/renxuan/sanzhongsan/sanzhongsan.component';
-import { SizhongsiComponent } from './component/lottery/lt11x5/renxuan/sizhongsi/sizhongsi.component';
-import { WuzhongwuComponent } from './component/lottery/lt11x5/renxuan/wuzhongwu/wuzhongwu.component';
-import { LiuzhongwuComponent } from './component/lottery/lt11x5/renxuan/liuzhongwu/liuzhongwu.component';
-import { QizhongwuComponent } from './component/lottery/lt11x5/renxuan/qizhongwu/qizhongwu.component';
-import { BazhongwuComponent } from './component/lottery/lt11x5/renxuan/bazhongwu/bazhongwu.component';
+import { Lt11x5ComponentList } from './config/dynamic-component-list';
+
 
 @NgModule({
   declarations: [
@@ -30,20 +24,16 @@ import { BazhongwuComponent } from './component/lottery/lt11x5/renxuan/bazhongwu
     Lt11x5Component,
     LtHeaderComponent,
     LtFooterComponent,
-    YizhongyiComponent,
-    ErzhongerComponent,
-    SanzhongsanComponent,
-    SizhongsiComponent,
-    WuzhongwuComponent,
-    LiuzhongwuComponent,
-    QizhongwuComponent,
-    BazhongwuComponent
+    ...Lt11x5ComponentList
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     routes,
     HttpModule
+  ],
+  entryComponents: [
+    ...Lt11x5ComponentList
   ],
   providers: [],
   bootstrap: [AppComponent]

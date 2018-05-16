@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { headAnimate, boxAnimate } from '../../../animations/animate';
 
 @Component({
@@ -15,7 +15,9 @@ export class LtHeaderComponent implements OnInit {
     @Input() methodList: any;
     @Input() gameName_cn: String;
     @Input() currentMethodId: String;
+    @Input() currentPlayId: String;
     @Input() currentPlayArr: Array<any>;
+    @Output() change = new EventEmitter();
     constructor() { }
 
     ngOnInit() {
@@ -65,7 +67,15 @@ export class LtHeaderComponent implements OnInit {
      * 切换小玩法
      */
     switchPlay(playId: String) {
-        console.log('切换小玩法');
+        this.currentPlayId = playId;
+        this.playIDChange();
         return;
+    }
+
+    /**
+     * 监听父类传输的playID变化
+     */
+    playIDChange() {
+        this.change.emit(this.currentPlayId);
     }
 }
