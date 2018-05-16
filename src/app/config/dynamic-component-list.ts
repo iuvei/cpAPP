@@ -11,7 +11,7 @@ const Lt11x5ComponentList = [
     YizhongyiComponent, ErzhongerComponent, SanzhongsanComponent, SizhongsiComponent,
     WuzhongwuComponent, LiuzhongwuComponent, QizhongwuComponent, BazhongwuComponent
 ];
-const Lt11x5ComponentListNameCN = [
+const Lt11x5ComponentMap = [
     {
         '一中一': YizhongyiComponent,
     },
@@ -39,4 +39,7 @@ const Lt11x5ComponentListNameCN = [
     // YizhongyiComponent, ErzhongerComponent, SanzhongsanComponent, SizhongsiComponent,
     // WuzhongwuComponent, LiuzhongwuComponent, QizhongwuComponent, BazhongwuComponent
 ];
-export { Lt11x5ComponentList }
+export { Lt11x5ComponentList, Lt11x5ComponentMap  }
+
+
+

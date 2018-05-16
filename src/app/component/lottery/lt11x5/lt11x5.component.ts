@@ -3,7 +3,7 @@ import {
     ReflectiveInjector
 } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Lt11x5ComponentList } from '../../../config/dynamic-component-list';
+import { Lt11x5ComponentMap } from '../../../config/dynamic-component-list';
 // import {  }
 @Component({
     selector: 'app-11x5',
@@ -17,10 +17,10 @@ export class Lt11x5Component implements OnDestroy, OnInit {
     protected gameConfig: any;
     public methodList: Array<any>;
     public currentGameId: number;  // 当前彩种ID
-    public gameName_cn: String; // 当前玩法中文名称
-    public gameName_en: String; // 当前玩法英文名称
-    public currentMethodId: String; // 当前大玩法群ID
-    public currentPlayId: String; // 当前小玩法ID
+    public gameName_cn: string; // 当前玩法中文名称
+    public gameName_en: string; // 当前玩法英文名称
+    public currentMethodId: string; // 当前大玩法群ID
+    public currentPlayId: string; // 当前小玩法ID
     public currentPlayArr: Array<any>; // 当前小玩法数组
     constructor(private routerIonfo: ActivatedRoute, private resolver: ComponentFactoryResolver) {
         this.gameConfig = {
@@ -1170,18 +1170,29 @@ export class Lt11x5Component implements OnDestroy, OnInit {
         this.methodList = this.gameConfig.methodList;
         this.currentGameId = this.gameConfig.lotteryId;
         this.gameName_cn = this.gameConfig.gameName_cn;
+        //this.createComponent();
     }
+    /**
+     * 创建组件
+     */
     createComponent() {
+        let playID = '一中一';
         if (this.currentPlayId) {
-            const playID = this.currentPlayId;
+            playID = this.currentPlayId;
         } else {
-            const playID = '一中一';
+            playID = '一中一';
         }
-        const factory = this.resolver.resolveComponentFactory(Lt11x5ComponentList[playID]);
+        const factory = this.resolver.resolveComponentFactory(Lt11x5ComponentMap[playID]);
         if (this.compRef) {
             this.compRef.destroy();
         }
         this.compRef = this.playContainer.createComponent(factory); // 创建组件
+    }
+    /**
+     * 监听父类传输的playID变化
+     */
+    playIDChange($event) {
+        this.createComponent();
     }
     ngOnInit() {
         const self = this;

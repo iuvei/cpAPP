@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { headAnimate, boxAnimate } from '../../../animations/animate';
+import { headAnimate } from '../../../animations/animate';
 
 @Component({
     selector: 'app-lt-header',
@@ -63,19 +63,18 @@ export class LtHeaderComponent implements OnInit {
             }
         }
     }
+    // /**
+    //  * 监听父类传输的playID变化
+    //  */
+    // playIDChange() {
+    //     this.change.emit(this.currentPlayId);
+    // }
     /**
      * 切换小玩法
      */
     switchPlay(playId: String) {
         this.currentPlayId = playId;
-        this.playIDChange();
-        return;
-    }
-
-    /**
-     * 监听父类传输的playID变化
-     */
-    playIDChange() {
         this.change.emit(this.currentPlayId);
+        return;
     }
 }

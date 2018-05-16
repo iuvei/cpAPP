@@ -24,7 +24,7 @@ import { Lt11x5ComponentList } from './config/dynamic-component-list';
     Lt11x5Component,
     LtHeaderComponent,
     LtFooterComponent,
-    ...Lt11x5ComponentList
+    ...Lt11x5ComponentList,
   ],
   imports: [
     BrowserModule,
@@ -33,7 +33,8 @@ import { Lt11x5ComponentList } from './config/dynamic-component-list';
     HttpModule
   ],
   entryComponents: [
-    ...Lt11x5ComponentList
+    AppComponent,
+    ...Lt11x5ComponentList,
   ],
   providers: [],
   bootstrap: [AppComponent]
