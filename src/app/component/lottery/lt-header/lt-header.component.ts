@@ -13,16 +13,17 @@ export class LtHeaderComponent implements OnInit {
     private slideState: String = 'hide';
     private show_slide_div: Boolean = false;
     @Input() methodList: any;
-    @Input() gameName_cn: String;
-    @Input() currentMethodId: String;
-    @Input() currentPlayId: String;
+    @Input() gameName_cn: string;
+    @Input() currentMethodId: string;
+    @Input() currentMethodName_cn: string;
+    @Input() currentPlayId: string;
     @Input() currentPlayArr: Array<any>;
-    @Output() change = new EventEmitter();
+    @Input() currentPlayName_cn: string;
+    @Output() playChange = new EventEmitter();
     constructor() { }
 
     ngOnInit() {
         // 玩法数据格式化
-        console.log(this.methodList);
         this.methodList.forEach(element => {
             const sonMethod = element.children;
             let arr = [];
@@ -33,48 +34,49 @@ export class LtHeaderComponent implements OnInit {
             }
             element.children = arr;
         });
-        if (!this.currentMethodId) {
-            this.switchMethod('34');
-            // this.switchPlay();
-        }
+        this.switchMethod(this.currentMethodId);
+        this.switchPlay(this.currentPlayName_cn, this.currentPlayId);
     }
     /**
      * 玩法区域显示/隐藏方法
      */
-    ctrlSlideDiv() {
-        this.show_slide_div = !this.show_slide_div;
+    ctrlSlideDiv(show_slide_div: boolean) {
         if (this.show_slide_div) {
             this.slideState = 'show';
         } else {
             this.slideState = 'hide';
         }
+        this.show_slide_div = !this.show_slide_div;
     }
     /**
      * 切换玩法群组
      */
-    switchMethod(methodId: String) {
+    switchMethod(methodId: string) {
         const self = this;
         const methodList = this.methodList;
         for (const method of methodList) {
             if (method.id === methodId) {
                 self.currentMethodId = methodId;
                 self.currentPlayArr = method.children;
+                self.currentMethodName_cn = method['name_cn'];
                 return;
             }
         }
     }
-    // /**
-    //  * 监听父类传输的playID变化
-    //  */
-    // playIDChange() {
-    //     this.change.emit(this.currentPlayId);
-    // }
     /**
      * 切换小玩法
+     * currentPlayName_cn 小玩法中文名称
+     * playId 小玩法ID
      */
-    switchPlay(playId: String) {
+    switchPlay(currentPlayName_cn: string, playId: string) {
+        console.log('切换小玩法');
+        console.log(currentPlayName_cn, playId);
         this.currentPlayId = playId;
-        this.change.emit(this.currentPlayId);
+        this.currentPlayName_cn = currentPlayName_cn;
+        // this.playChange.emit([this.currentPlayName_cn, this.currentPlayId]);
+        this.playChange.emit({'currentPlayName_cn': this.currentPlayName_cn, 'currentPlayId': this.currentPlayId,
+            'currentMethodName_cn': this.currentMethodName_cn});
+        this.ctrlSlideDiv(false);
         return;
     }
 }
