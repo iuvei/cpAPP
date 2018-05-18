@@ -45,9 +45,9 @@ input[type="button"], input[type="submit"], input[type="reset"], input[type="tex
 .nbs .to li {float: left; display: block; cursor: pointer;}
 .nbs .to ul {float:left; padding:0; margin:0;}
 .nbs .to li {margin: 0 3px; width: 33px; height: 33px; line-height: 33px; text-align: center; color:#6e6e6e; font-size: 13px;border: 1px solid #ccc;border-radius: 3px;}
-.nbs .to .on {color: #FFF;background-color: #FF9000;}
+.nbs .to .on {color: #FFF;background-color: #FF9000;border-color:#ee8c0e}
 
-.nbs .nb {padding: 0px 5px; height: 42px; width:230px; margin-right: 5px;}
+.nbs .nb {padding: 0px 5px; height: 42px; margin-right: 5px;}
 .nbs .nb div {background:#d3d4d6;width: 33px; height: 33px; text-align: center; color: #6e6e6e; line-height: 33px; font-size:16px;  text-decoration: none;  float: left; display: inline; cursor: pointer;margin: 3px;border-radius: 52px;}
 .nbs .nb .dansuang {background:#d3d4d6;width: 60px; height: 42px; text-align: center; color: #6e6e6e; line-height: 42px; font-size: 16px;  text-decoration: none;  float: left; display: inline; cursor: pointer;margin: 5px 5px;border-radius: 10px;}
 .nbs .nb .on {background:#337AB7; color: #fff;}

@@ -1,4 +1,6 @@
-<app-lt-header [currentPlayId]='currentPlayId' (playChange)='playChange($event)' [methodList]='methodList' [currentMethodId]='currentMethodId' [currentMethodName_cn]='currentMethodName_cn' [gameName_cn]='gameName_cn' [currentPlayArr]='currentPlayArr' [currentPlayName_cn]='currentPlayName_cn'></app-lt-header>
+<!-- <app-lt-header [currentPlayId]='currentPlayId' (playChange)='playChange($event)' [methodList]='methodList' [currentMethodId]='currentMethodId' [currentMethodName_cn]='currentMethodName_cn' [gameName_cn]='gameName_cn' [currentPlayArr]='currentPlayArr' [currentPlayName_cn]='currentPlayName_cn'></app-lt-header> -->
+<app-lt-header (playChange)='playChange($event)' [lottery]='lottery'></app-lt-header>
+
 <div id="content" #playContainer>
     <!-- <app-yizhongyi ></app-yizhongyi> -->
 </div>

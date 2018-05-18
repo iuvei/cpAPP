@@ -13,7 +13,7 @@ const ROUTER: Routes = [
         path: 'lottery',
         children: [
             {
-                path: '11x5/:lotteryId', component: Lt11x5Component ,
+                path: '11x5/:lotteryID', component: Lt11x5Component ,
             },
         ]
     },

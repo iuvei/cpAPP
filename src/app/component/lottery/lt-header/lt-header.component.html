@@ -3,7 +3,7 @@
         <img src="/assets/images/back.jpg" style=" height: 18px;">
     </a>
     <div class="hade_title" (click)="ctrlSlideDiv(show_slide_div)">
-        <span id="hade_title">{{gameName_cn}}</span>
+        <span id="hade_title">{{lottery.gameName_cn}}</span>
         <img src="/assets/images/up.jpg">
     </div>
     <div style="position: absolute; right: 0px; top: 0px; float: right;width: 110px;text-align: right; padding: 0;font-size: 16px;">
@@ -16,12 +16,12 @@
     <div class="slide_bj"></div>
     <div class="slide_con">
         <div class="slide_tab">
-            <a *ngFor='let method of methodList' [class.active]='method.id==currentMethodId' (click)="switchMethod(method.id)" name="{{method.name_en}}">{{method.name_cn | slice:0:2}}</a>
+            <a *ngFor='let method of methodList' [class.active]='method.id==lottery.currentMethodId' (click)="switchMethod(method.id)" name="{{method.name_en}}">{{method.name_cn | slice:0:2}}</a>
         </div>
         <div class="choose_con">
             <div class="check" name="num_rx">
                 <div class="che_div">
-                    <a *ngFor='let play of currentPlayArr' (click)='switchPlay(play.name_cn,play.id)'>{{play.name_cn}}</a>
+                    <a *ngFor='let play of currentPlayArr' [class.on]='play.name_cn==lottery.currentPlayName_cn' (click)='switchPlay(play.name_cn,play.id)'>{{play.name_cn}}</a>
                 </div>
             </div>
         </div>

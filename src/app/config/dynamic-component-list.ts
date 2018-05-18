@@ -24,7 +24,9 @@ import { DsbazhongwuComponent } from '../component/lottery/lt11x5/danshi/dsbazho
 // 十一选五
 const Lt11x5ComponentList = [
     YizhongyiComponent, ErzhongerComponent, SanzhongsanComponent, SizhongsiComponent,
-    WuzhongwuComponent, LiuzhongwuComponent, QizhongwuComponent, BazhongwuComponent
+    WuzhongwuComponent, LiuzhongwuComponent, QizhongwuComponent, BazhongwuComponent,
+    DsyizhongyiComponent, DserzhongerComponent, DssanzhongsanComponent, DssizhongsiComponent,
+    DswuzhongwuComponent, DsliuzhongwuComponent, DsqizhongwuComponent, DsbazhongwuComponent
 ];
 const Lt11x5ComponentMap = {
     '任选': {

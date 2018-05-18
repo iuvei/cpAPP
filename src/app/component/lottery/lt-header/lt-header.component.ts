@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { headAnimate } from '../../../animations/animate';
-
+import { GameBaseService, Lottery } from '../../../share/game-base.service';
 @Component({
     selector: 'app-lt-header',
     templateUrl: './lt-header.component.html',
@@ -10,20 +10,26 @@ import { headAnimate } from '../../../animations/animate';
     ]
 })
 export class LtHeaderComponent implements OnInit {
-    private slideState: String = 'hide';
-    private show_slide_div: Boolean = false;
-    @Input() methodList: any;
-    @Input() gameName_cn: string;
-    @Input() currentMethodId: string;
-    @Input() currentMethodName_cn: string;
-    @Input() currentPlayId: string;
-    @Input() currentPlayArr: Array<any>;
-    @Input() currentPlayName_cn: string;
+    private slideState: String;
+    private show_slide_div: Boolean;
+    private currentPlayArr: Array<any>;
+    // @Input() methodList: any;
+    // @Input() gameName_cn: string;
+    // @Input() currentMethodId: string;
+    // @Input() currentMethodName_cn: string;
+    // @Input() currentPlayId: string;
+    // @Input() currentPlayArr: Array<any>;
+    // @Input() currentPlayName_cn: string;
+    @Input() lottery: Lottery;
+    private methodList: any;
     @Output() playChange = new EventEmitter();
-    constructor() { }
-
+    constructor(private gameBaseService: GameBaseService) {
+        this.slideState = 'false';
+        this.show_slide_div = false;
+    }
     ngOnInit() {
         // 玩法数据格式化
+        this.methodList = this.lottery.getMethodList() ;
         this.methodList.forEach(element => {
             const sonMethod = element.children;
             let arr = [];
@@ -34,8 +40,8 @@ export class LtHeaderComponent implements OnInit {
             }
             element.children = arr;
         });
-        this.switchMethod(this.currentMethodId);
-        this.switchPlay(this.currentPlayName_cn, this.currentPlayId);
+        this.switchMethod(this.lottery.getCurrentMethodId());
+        this.switchPlay(this.lottery.getCurrentPlayName_cn(), this.lottery.getCurrentPlayId());
     }
     /**
      * 玩法区域显示/隐藏方法
@@ -56,9 +62,9 @@ export class LtHeaderComponent implements OnInit {
         const methodList = this.methodList;
         for (const method of methodList) {
             if (method.id === methodId) {
-                self.currentMethodId = methodId;
+                self.lottery.setrCurrentMethodId(methodId);
+                self.lottery.setCurrentMethodName_cn(method['name_cn']);
                 self.currentPlayArr = method.children;
-                self.currentMethodName_cn = method['name_cn'];
                 return;
             }
         }
@@ -71,11 +77,9 @@ export class LtHeaderComponent implements OnInit {
     switchPlay(currentPlayName_cn: string, playId: string) {
         console.log('切换小玩法');
         console.log(currentPlayName_cn, playId);
-        this.currentPlayId = playId;
-        this.currentPlayName_cn = currentPlayName_cn;
-        // this.playChange.emit([this.currentPlayName_cn, this.currentPlayId]);
-        this.playChange.emit({'currentPlayName_cn': this.currentPlayName_cn, 'currentPlayId': this.currentPlayId,
-            'currentMethodName_cn': this.currentMethodName_cn});
+        this.lottery.setCurrentPlayId(playId);
+        this.lottery.setCurrentPlayName_cn(currentPlayName_cn);
+        this.playChange.emit();
         this.ctrlSlideDiv(false);
         return;
     }

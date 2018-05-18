@@ -14,6 +14,7 @@ import { LtHeaderComponent } from './component/lottery/lt-header/lt-header.compo
 import { LtFooterComponent } from './component/lottery/lt-footer/lt-footer.component';
 import { Lt11x5ComponentList } from './config/dynamic-component-list';
 
+import { GameBaseService } from './share/game-base.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ import { Lt11x5ComponentList } from './config/dynamic-component-list';
     AppComponent,
     ...Lt11x5ComponentList,
   ],
-  providers: [],
+  providers: [{provide: GameBaseService, useClass: GameBaseService} ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -2,38 +2,38 @@ import {
     Component, Input, OnInit, ViewChild, ViewContainerRef, ComponentFactory, ComponentFactoryResolver, ComponentRef, OnDestroy,
     ReflectiveInjector
 } from '@angular/core';
-import { GameBaseService } from '../../../share/game-base.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Lt11x5ComponentMap } from '../../../config/dynamic-component-list';
-
+import { GameBaseService, Lottery } from '../../../share/game-base.service';
 @Component({
     selector: 'app-11x5',
     templateUrl: './lt11x5.component.html',
-    styleUrls: ['./lt11x5.component.css'],
-    providers: [ GameBaseService ]
+    styleUrls: ['./lt11x5.component.css']
 })
 export class Lt11x5Component implements OnDestroy, OnInit {
     @ViewChild('playContainer', { read: ViewContainerRef }) playContainer: ViewContainerRef;
     compRef: ComponentRef<any>; //  加载的组件实例
-    private lotteryId: number;
-    protected gameConfig: any;
-    public methodList: Array<any>;
-    public currentGameId: number;  // 当前彩种ID
-    public gameName_cn: string; // 当前彩种中文名称
-    public gameName_en: string; // 当前彩种英文名称
-    public currentMethodId: string; // 当前大玩法群ID
-    public currentMethodName_cn: string; // 当前大玩法群ID
-    public currentPlayId: string; // 当前小玩法ID
-    public currentPlayName_cn: string; // 当前小玩法中文名称
-    public currentPlayArr: Array<any>; // 当前小玩法数组
+    private lottery: Lottery;
+    private lotteryID: number;
+    // protected gameConfig: any;
+    // public methodList: Array<any>;
+    // public currentGameId: number;  // 当前彩种ID
+    // public gameName_cn: string; // 当前彩种中文名称
+    // public gameName_en: string; // 当前彩种英文名称
+    // public currentMethodId: string; // 当前大玩法群ID
+    // public currentMethodName_cn: string; // 当前大玩法群ID
+    // public currentPlayId: string; // 当前小玩法ID
+    // public currentPlayName_cn: string; // 当前小玩法中文名称
+    // public currentPlayArr: Array<any>; // 当前小玩法数组
     constructor(private routerIonfo: ActivatedRoute, private resolver: ComponentFactoryResolver, private gameBaseService: GameBaseService) {
-        this.gameConfig = {
+        this.lottery = gameBaseService.getLottery();
+        const gameConfig = {
             lotteryId: '1',
             gameName_cn: '山东11选5',
             gameName_en: 'sd11x5',
             currentNumber: '201805100929',
-            currentNumberTime: '1525937335',
-            currentTime: '1525937294',
+            currentNumberTime: 1525937335,
+            currentTime: 1525937294,
             methodList: [
                 {
                     'id': '30',
@@ -1171,43 +1171,44 @@ export class Lt11x5Component implements OnDestroy, OnInit {
                 // }
             ]
         };
-        this.methodList = this.gameConfig.methodList;
-        console.log(this.methodList);
-        this.currentGameId = this.gameConfig.lotteryId;
-        this.gameName_cn = this.gameConfig.gameName_cn;
-        this.currentMethodId = this.methodList[5]['id'];
-        this.currentMethodName_cn = this.methodList[5]['name_cn'];
-        this.currentPlayId = this.methodList[5].children[0].children[0]['id'];
-        this.currentPlayName_cn = this.methodList[5].children[0].children[0]['name_cn'];
-        // this.createComponent();
-        gameBaseService.test();
+        this.lottery.setLotteryId(gameConfig.lotteryId);
+        this.lottery.setGameName_cn(gameConfig.gameName_cn);
+        this.lottery.setGameName_en(gameConfig.gameName_en);
+        this.lottery.setCurrentNumber(gameConfig.currentNumber);
+        this.lottery.setCurrentNumberTime(gameConfig.currentNumberTime);
+        this.lottery.setCurrentTime(gameConfig.currentTime);
+        this.lottery.setCurrentTime(gameConfig.currentTime);
+        this.lottery.setMethodList(gameConfig.methodList);
+        // 默认玩法配置
+        this.lottery.setrCurrentMethodId(gameConfig.methodList[5]['id']);
+        this.lottery.setCurrentMethodName_cn(gameConfig.methodList[5]['name_cn']);
+        this.lottery.setCurrentPlayId(gameConfig.methodList[5].children[0].children[0]['id']);
+        this.lottery.setCurrentPlayName_cn(gameConfig.methodList[5].children[0].children[0]['name_cn']);
     }
     /**
      * 动态创建组件
      */
     createComponent() {
-        const currentPlayName_cn = this.currentPlayName_cn;
-        const currentMethodName_cn = this.currentMethodName_cn;
-        console.log(Lt11x5ComponentMap[this.currentMethodName_cn][currentPlayName_cn]);
+        const currentPlayName_cn = this.lottery.getCurrentPlayName_cn();
+        const currentMethodName_cn = this.lottery.getCurrentMethodName_cn();
+        console.log(Lt11x5ComponentMap[currentMethodName_cn][currentPlayName_cn]);
         const factory: ComponentFactory<any> =
-            this.resolver.resolveComponentFactory(Lt11x5ComponentMap[this.currentMethodName_cn][currentPlayName_cn]);
+            this.resolver.resolveComponentFactory(Lt11x5ComponentMap[currentMethodName_cn][currentPlayName_cn]);
         if (this.compRef) {
             this.compRef.destroy();
         }
         this.compRef = this.playContainer.createComponent(factory); // 创建组件
     }
     /**
-     * 监听父类传输的playID变化
+     * 监听子组件playID变化
      */
-    playChange(currentPlay) {
-        this.currentPlayName_cn = currentPlay.currentPlayName_cn;
-        this.currentPlayId = currentPlay.currentPlayId;
-        this.currentMethodName_cn = currentPlay.currentMethodName_cn;
+    playChange() {
         this.createComponent();
     }
     ngOnInit() {
         const self = this;
-        this.routerIonfo.params.subscribe((params: Params) => this.lotteryId = params['lotteryId']);
+        this.routerIonfo.params.subscribe((params: Params) => this.lotteryID = params['lotteryID']);
+       // this.gameBaseService.test();
     }
     ngOnDestroy() {
         if (this.compRef) {
