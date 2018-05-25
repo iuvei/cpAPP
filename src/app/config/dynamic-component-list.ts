@@ -51,7 +51,7 @@ const Lt11x5ComponentMap = {
     }
 };
 
-export { Lt11x5ComponentList, Lt11x5ComponentMap  }
+export { Lt11x5ComponentList, Lt11x5ComponentMap };
 
 
 

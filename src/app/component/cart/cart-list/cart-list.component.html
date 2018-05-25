@@ -1,0 +1,12 @@
+<div id="playlist"  style="margin-top:120px; padding-bottom: 110px">
+    <div *ngFor="let betting of bettings" class="list1rec" ref="0">
+        <div class="list1rec-remove">
+            <span class="glyphicon glyphicon-remove-circle"></span>
+        </div>
+        <div class="list1rec-info">
+            <p>{{betting.type}}</p>
+            <p>投注内容: {{betting.postParameter}}</p>
+            <p>共{{betting.numCount}}注 {{betting.amount}}元 倍数:{{betting.multiple}} 模式:{{betting.moneyUnit}}</p>
+        </div>
+    </div>
+</div>

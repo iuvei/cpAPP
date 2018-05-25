@@ -1,3 +1,4 @@
+
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -15,7 +16,11 @@ import { LtFooterComponent } from './component/lottery/lt-footer/lt-footer.compo
 import { Lt11x5ComponentList } from './config/dynamic-component-list';
 
 import { GameBaseService } from './share/game-base.service';
-
+import { CartService } from './share/cart.service';
+import { CartListComponent } from './component/cart/cart-list/cart-list.component';
+import { CartHeaderComponent } from './component/cart/cart-header/cart-header.component';
+import { CartFooterComponent } from './component/cart/cart-footer/cart-footer.component';
+import { CartIndexComponent } from './component/cart/cart-index/cart-index.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,6 +31,10 @@ import { GameBaseService } from './share/game-base.service';
     LtHeaderComponent,
     LtFooterComponent,
     ...Lt11x5ComponentList,
+    CartListComponent,
+    CartHeaderComponent,
+    CartFooterComponent,
+    CartIndexComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,7 +46,7 @@ import { GameBaseService } from './share/game-base.service';
     AppComponent,
     ...Lt11x5ComponentList,
   ],
-  providers: [{provide: GameBaseService, useClass: GameBaseService} ],
+  providers: [{provide: GameBaseService, useClass: GameBaseService}, {provide: CartService, useClass: CartService} ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

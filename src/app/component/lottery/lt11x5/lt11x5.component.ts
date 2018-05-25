@@ -5,6 +5,7 @@ import {
 import { ActivatedRoute, Params } from '@angular/router';
 import { Lt11x5ComponentMap } from '../../../config/dynamic-component-list';
 import { GameBaseService, Lottery } from '../../../share/game-base.service';
+import { Subscription } from 'rxjs/Subscription';
 @Component({
     selector: 'app-11x5',
     templateUrl: './lt11x5.component.html',
@@ -15,6 +16,8 @@ export class Lt11x5Component implements OnDestroy, OnInit {
     compRef: ComponentRef<any>; //  加载的组件实例
     private lottery: Lottery;
     private lotteryID: number;
+    showCart: boolean;
+    showCartSubscription: Subscription;
     // protected gameConfig: any;
     // public methodList: Array<any>;
     // public currentGameId: number;  // 当前彩种ID
@@ -26,6 +29,12 @@ export class Lt11x5Component implements OnDestroy, OnInit {
     // public currentPlayName_cn: string; // 当前小玩法中文名称
     // public currentPlayArr: Array<any>; // 当前小玩法数组
     constructor(private routerIonfo: ActivatedRoute, private resolver: ComponentFactoryResolver, private gameBaseService: GameBaseService) {
+        // 购物车面板状态监听
+        this.showCart = this.gameBaseService.showCart;
+        this.showCartSubscription = this.gameBaseService.showCartObservable
+        .subscribe(showCart => {
+            this.showCart = showCart;
+        });
         this.lottery = gameBaseService.getLottery();
         const gameConfig = {
             lotteryId: '1',
@@ -1171,6 +1180,7 @@ export class Lt11x5Component implements OnDestroy, OnInit {
                 // }
             ]
         };
+        gameBaseService.setMethodCache(gameConfig.methodList);
         this.lottery.setLotteryId(gameConfig.lotteryId);
         this.lottery.setGameName_cn(gameConfig.gameName_cn);
         this.lottery.setGameName_en(gameConfig.gameName_en);
@@ -1197,7 +1207,7 @@ export class Lt11x5Component implements OnDestroy, OnInit {
         if (this.compRef) {
             this.compRef.destroy();
         }
-        this.compRef = this.playContainer.createComponent(factory); // 创建组件
+        this.compRef = this.playContainer && this.playContainer.createComponent(factory); // 创建组件
     }
     /**
      * 监听子组件playID变化
@@ -1206,9 +1216,7 @@ export class Lt11x5Component implements OnDestroy, OnInit {
         this.createComponent();
     }
     ngOnInit() {
-        const self = this;
         this.routerIonfo.params.subscribe((params: Params) => this.lotteryID = params['lotteryID']);
-       // this.gameBaseService.test();
     }
     ngOnDestroy() {
         if (this.compRef) {

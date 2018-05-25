@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-
+import { GameBaseService, Lottery } from '../../../../../share/game-base.service';
 @Component({
     selector: 'app-yizhongyi',
     templateUrl: './yizhongyi.component.html',
@@ -8,6 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class YizhongyiComponent implements OnInit {
     @Output() output = new EventEmitter();
     private ballsData: Array<Array<number>>; // 球数据
+    private lottery: Lottery;
     private batchBound: string;
     private batchBoundArr: Array<object>;
     /**
@@ -15,11 +16,11 @@ export class YizhongyiComponent implements OnInit {
      */
     rebuildData() {
         const self = this;
-        self.ballsData = [
+        self.lottery.setBallsData([
             [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
-        ];
-        self.batchBound = 'none';
-        self.batchBoundArr = [
+        ]);
+        self.lottery.setBatchBound('none');
+        self.lottery.setBatchBoundArr([
             {
                 'batchBound': 'big', 'desc': '大'
             },
@@ -38,100 +39,18 @@ export class YizhongyiComponent implements OnInit {
             {
                 'batchBound': 'clean', 'desc': '清'
             },
-        ];
+        ]);
     }
-    /**
-     * 改变选球数据
-     * @param x 横坐标
-     * @param y 纵坐标
-     * @param value 值
-     */
-    setBallData(x: any, y: any, value: any) {
-        const self = this,
-        data = self.ballsData;
-        // self.fireEvent('beforeSetBallData', x, y, value);
-        if (x >= 0 && x < data.length && y >= 0) {
-            data[x][y] = value;
-        }
-        // self.fireEvent('afterSetBallData', x, y, value);
-        console.log(self.ballsData);
+    constructor(private gameBaseService: GameBaseService) {
+        this.lottery = gameBaseService.getLottery();
     }
-    /**
-     * 选球事件
-     * @param x 横坐标
-     * @param y 纵坐标
-     */
     selectBallEvent(row: any, col: any) {
-        const self = this,
-        data = self.ballsData;
-        if (Number(data[row][col]) === 1) {
-            self.setBallData(row, col, -1);
-        } else {
-            self.setBallData(row, col, 1);
-        }
-        self.batchBound = 'none';
+        this.gameBaseService.selectBallEvent(row, col);
     }
-    /**
-     * 批量选球
-     * @row 行数
-     * @bound 类型
-     */
     batchselectBallEvent(row: number, bound: string) {
-        const self = this,
-            ballsData = self.ballsData,
-            x = row,
-            type = bound,
-            len = ballsData[row].length,
-            makearr = [],
-            start = 0,
-            halfLen = Math.ceil((len - start) / 2 + start);
-            self['batchBound'] = bound;
-        for (let i = start; i < len; i++) {
-            self.setBallData(x, i, -1);
-        }
-        switch (bound) {
-            case 'all':
-                for (let i = start; i < len; i++) {
-                    self.setBallData(x, i, 1);
-                }
-                break;
-            case 'big':
-                for (let i = halfLen; i < len; i++) {
-                    self.setBallData(x, i, 1);
-                }
-                break;
-            case 'small':
-                for (let i = start; i < halfLen; i++) {
-                    self.setBallData(x, i, 1);
-                }
-                break;
-            case 'odd':
-                for (let i = start; i < len; i++) {
-                    if ((i + 1) % 2 !== 1) {
-                        self.setBallData(x, i, 1);
-                    }
-                }
-                break;
-            case 'even':
-                for (let i = start; i < len; i++) {
-                    if ((i + 1) % 2 === 1) {
-                        self.setBallData(x, i, 1);
-                    }
-                }
-                break;
-            case 'clean':
-                for (let i = start; i < len; i++) {
-                    self.setBallData(x, i, -1);
-                }
-                break;
-            default:
-                break;
-        }
+        this.gameBaseService.batchselectBallEvent(row, bound);
     }
-    constructor() { }
-
     ngOnInit() {
-        console.log();
         this.rebuildData();
     }
 

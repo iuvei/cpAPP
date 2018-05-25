@@ -1,8 +1,28 @@
 import { Injectable } from '@angular/core';
-
+import { Subject } from 'rxjs/Subject';
 @Injectable()
 export class GameBaseService {
-    public lottery: Lottery;
+    lottery: Lottery;
+    // 当前注数
+    numCount: number;
+    // 当前总投注额
+    numAmount: number;
+    // 购物车显示状态
+    showCart = false;
+    currentAmountDataSoucrce: Subject<object> = new Subject<object>();
+    currentAmountDataObservable = this.currentAmountDataSoucrce.asObservable();
+    showCartSource: Subject<boolean> = new Subject<boolean>();
+    showCartObservable = this.showCartSource.asObservable();
+    // 选球完成标识
+    public isBallsComplete: boolean;
+    // 元角分
+    public moneyUnit: number;
+    // 玩法缓存
+    methodCache: object;
+    // 倍数
+    // 奖金组
+    prize_group: number;
+    multiple: number;
     public getLottery() {
         return this.lottery;
     }
@@ -10,7 +30,67 @@ export class GameBaseService {
         this.lottery = lottery;
     }
     constructor() {
+        // 初始化游戏对象
         this.setLottery(new Lottery());
+        this.moneyUnit = 1;
+        this.multiple = 1;
+        this.numCount = 0;
+        this.numAmount = 0.00;
+    }
+    /**
+     * 根据id得到玩法
+     * @param id 玩法id
+     */
+    getPlayById(id) {
+        return this.methodCache['' + id];
+    }
+    /**
+     * 获取某玩法的单注单价
+     * * @param id 玩法id
+     */
+    getOnePriceById(id) {
+        return Number(this.getPlayById(id)['price']);
+    }
+    /**
+     * 根据id获取最大投注倍数
+     */
+    getLimitByPlayId(id, unit = 1) {
+        const maxnum = Number(this.getPlayById(id)['max_multiple']);
+        return maxnum / unit;
+    }
+    /**
+     * 将玩法树状数据整理成两级缓存数据
+     */
+    setMethodCache(list) {
+        const getMethodList = list,
+        nodeCache = {};
+        this.methodCache = {};
+        for (const node1 of getMethodList) {
+            node1['fullname_en'] = [node1['name_en']];
+            node1['fullname_cn'] = [node1['name_cn']];
+            nodeCache['' + node1['id']] = node1;
+            if (node1['children']) {
+                for (const node2 of node1['children']) {
+                    node2['fullname_en'] = node1['fullname_en'].concat(node2['name_en']);
+                    node2['fullname_cn'] = node1['fullname_cn'].concat(node2['name_cn']);
+                    nodeCache['' + node2['id']] = node2;
+                    if (node2['children']) {
+                        for (const node3 of node2['children']) {
+                            node3['fullname_en'] = node2['fullname_en'].concat(node3['name_en']);
+                            node3['fullname_cn'] = node2['fullname_cn'].concat(node3['name_cn']);
+                            this.methodCache['' + node3['id']] = node3;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /**
+     * 改变购物车显示状态
+     */
+    changeCartStatus() {
+        this.showCart = !this.showCart;
+        this.showCartSource.next(this.showCart);
     }
     /**
      * 改变选球数据
@@ -40,6 +120,7 @@ export class GameBaseService {
             self.setBallData(row, col, 1);
         }
         self.lottery.setBatchBound('none') ;
+        this.updateData();
     }
     /**
      * 批量选球
@@ -55,7 +136,6 @@ export class GameBaseService {
             makearr = [],
             start = 0,
             halfLen = Math.ceil((len - start) / 2 + start);
-            self['batchBound'] = bound;
         for (let i = start; i < len; i++) {
             self.setBallData(x, i, -1);
         }
@@ -97,6 +177,209 @@ export class GameBaseService {
             default:
                 break;
         }
+        self.lottery.setBatchBound(bound);
+        self.updateData();
+    }
+    /**
+     * 获取总注数/获取组合结果
+     * getbetList 任何参数时获取投注组合
+     */
+    getBetData(...getbetList) {
+        const self = this,
+            data = self.lottery.getBallsData(),
+            len = data.length,
+            _tempRow = [],
+            result = [];
+            let row, isEmptySelect = true , len2 = 0, rowNum = 0,
+            // 总注数
+            total = 1;
+        // 检测球是否完整
+        for (let i = 0; i < len; i++) {
+            result[i] = [];
+            row = data[i];
+            len2 = row.length;
+            for (let j = 0; j < len2; j++) {
+                if (row[j] > 0) {
+                    isEmptySelect = false;
+                    // 需要计算组合则推入结果
+                    if (getbetList.length) {
+                        result[i].push(j);
+                    }
+                    rowNum++;
+                }
+            }
+            if (isEmptySelect) {
+                // alert('第' + i + '行选球不完整');
+                self.isBallsComplete = false;
+                return [];
+            }
+            // 计算注数
+            total *= rowNum;
+        }
+        self.isBallsComplete = true;
+        // 返回注数
+        if (!getbetList.length) {
+            return total;
+        }
+        if (self.isBallsComplete) {
+            // 组合结果
+            return self.combination(result);
+        } else {
+            return [];
+        }
+    }
+    /**
+     * 二维数组的排列组合
+     * @param arr2 二维数组
+     */
+    combination(arr2) {
+        if (arr2.length < 1) {
+            return [];
+        }
+        const w = arr2[0].length,
+            m = [],
+            result = [],
+            h = arr2.length;
+        let i, j,
+            n,
+            _row = [];
+
+        m[i = h] = 1;
+
+        while (i--) {
+            m[i] = m[i + 1] * arr2[i].length;
+        }
+        n = m[0];
+        for (i = 0; i < n; i++) {
+            _row = [];
+            for (j = 0; j < h; j++) {
+                // _row[j] = arr2[j][~~(i % m[j] / m[j + 1])];
+                _row[j] = arr2[j][(i % m[j] / m[j + 1])];
+            }
+            result[i] = _row;
+        }
+        return result;
+    }
+    /**
+     * 选球之后更新所有数据
+     */
+    updateData() {
+        let betData,
+            position,
+            original,
+            currentAmountData = {
+                'numCount': 0,
+                'numAmount': 0.00,
+            };
+        betData = this.getBetData(1);
+        position = this.getPositionOptionData();
+        original = this.getOriginal();
+        const singlePrice = this.getOnePriceById(this.lottery.getCurrentPlayId());
+        this.numCount = betData.length;
+        this.numAmount = (this.numCount * this.moneyUnit * this.multiple * singlePrice);
+        currentAmountData = {
+           'numCount': this.numCount,
+           'numAmount': this.numAmount
+        };
+        this.currentAmountDataSoucrce.next(currentAmountData);
+    }
+    /**
+     * 生成单注随机数
+     */
+    createRandomNum() {
+        const self = this,
+            current = [],
+            len = self.lottery.getBallsData().length,
+            rowLen = self.lottery.getBallsData()[0].length;
+        // 随机数
+        for (let k = 0; k < len; k++) {
+            current[k] = [Math.floor(Math.random() * rowLen)];
+            current[k].sort(function(a, b) {
+                return a > b ? 1 : -1;
+            });
+        }
+        return current;
+    }
+    /**
+     * 限制随机投注重复
+     */
+    checkRandomBets(hash = {}, times = 0) {
+        const self = this,
+            allowTag = typeof hash === 'undefined' ? true : false,
+            len = self.lottery.getBallsData().length,
+            rowLen = self.lottery.getBallsData()[0].length;
+        let current = [];
+        // 生成单数随机数
+        current = self.createRandomNum();
+        // 如果大于限制数量
+        // 则直接输出
+        // if (Number(times) > Number(self.getRandomBetsNum())) {
+        //     return current;
+        // }
+        // 建立索引
+        // if (allowTag) {
+        //     for (let i = 0; i < order.length; i++) {
+        //         if (order[i]['type'] == me.defConfig.name) {
+        //             var name = order[i]['original'].join('');
+        //             hash[name] = name;
+        //         }
+        //     };
+        // }
+        // //对比结果
+        // if (hash[current.join('')]) {
+        //     times++;
+        //     return arguments.callee.call(me, hash, times);
+        // }
+        return current;
+    }
+    /**
+     * 重构选球数据
+     */
+    rebuildData() {
+        const self = this,
+        ballsData = self.lottery.getBallsData();
+        for (const arr1 of ballsData) {
+            arr1.forEach((v, k) => {
+                arr1[k] = -1;
+            });
+        }
+    }
+    /**
+     * 清空选球面板
+     */
+    clearSelectBallPanel()  {
+        const self = this;
+        self.isBallsComplete = false;
+        self.lottery.setBatchBound('none');
+        self.rebuildData();
+        self.updateData();
+        console.log('clearSelectBallPanel');
+        console.log(self.lottery.getBallsData());
+    }
+    getPositionOptionData() {
+        return [];
+    }
+    /**
+     * 格式化选球结果组合
+     */
+    getOriginal() {
+        const self = this,
+            balls = self.lottery.getBallsData(),
+            len = balls.length,
+            result = [];
+        let row = [],
+            len2 = 0;
+        for (let i = 0; i < len; i++) {
+            row = [];
+            len2 = balls[i].length;
+            for (let j = 0; j < len2; j++) {
+                if (balls[i][j] > 0) {
+                    row.push(j);
+                }
+            }
+            result.push(row);
+        }
+        return result;
     }
 }
 // 彩票类
@@ -225,5 +508,4 @@ export class Lottery {
     public setBatchBoundArr(batchBoundArr: Array<object>) {
         this.batchBoundArr = batchBoundArr;
     }
-
 }
