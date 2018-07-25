@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CartService, Betting } from './../../../share/cart.service';
 import { Subscription } from 'rxjs/Subscription';
+import { MultiplePipe } from './../../../pipe/multiple.pipe';
 @Component({
     selector: 'app-cart-list',
     templateUrl: './cart-list.component.html',
@@ -19,6 +20,12 @@ export class CartListComponent implements OnInit {
      }
 
     ngOnInit() {
+    }
+    /**
+     * 删除购彩蓝某行数据
+     */
+    deleteCartRow(index: number) {
+        this.cartService.deleteCartRow(index);
     }
 
 }

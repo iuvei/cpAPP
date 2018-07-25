@@ -8,7 +8,7 @@ import { GameBaseService, Lottery } from '../../../../../share/game-base.service
 export class YizhongyiComponent implements OnInit {
     @Output() output = new EventEmitter();
     private ballsData: Array<Array<number>>; // 球数据
-    private lottery: Lottery;
+    public lottery: Lottery;
     private batchBound: string;
     private batchBoundArr: Array<object>;
     /**

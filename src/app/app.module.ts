@@ -1,6 +1,7 @@
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -21,6 +22,8 @@ import { CartListComponent } from './component/cart/cart-list/cart-list.componen
 import { CartHeaderComponent } from './component/cart/cart-header/cart-header.component';
 import { CartFooterComponent } from './component/cart/cart-footer/cart-footer.component';
 import { CartIndexComponent } from './component/cart/cart-index/cart-index.component';
+import { MultiplePipe } from './pipe/multiple.pipe';
+import { CountDownComponent } from './component/lottery/count-down/count-down.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,9 +38,12 @@ import { CartIndexComponent } from './component/cart/cart-index/cart-index.compo
     CartHeaderComponent,
     CartFooterComponent,
     CartIndexComponent,
+    MultiplePipe,
+    CountDownComponent,
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     BrowserAnimationsModule,
     routes,
     HttpModule

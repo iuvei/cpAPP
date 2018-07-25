@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs/Subscription';
 export class Lt11x5Component implements OnDestroy, OnInit {
     @ViewChild('playContainer', { read: ViewContainerRef }) playContainer: ViewContainerRef;
     compRef: ComponentRef<any>; //  加载的组件实例
-    private lottery: Lottery;
+    public lottery: Lottery;
     private lotteryID: number;
     showCart: boolean;
     showCartSubscription: Subscription;
@@ -29,13 +29,14 @@ export class Lt11x5Component implements OnDestroy, OnInit {
     // public currentPlayName_cn: string; // 当前小玩法中文名称
     // public currentPlayArr: Array<any>; // 当前小玩法数组
     constructor(private routerIonfo: ActivatedRoute, private resolver: ComponentFactoryResolver, private gameBaseService: GameBaseService) {
+        const self = this;
         // 购物车面板状态监听
-        this.showCart = this.gameBaseService.showCart;
-        this.showCartSubscription = this.gameBaseService.showCartObservable
+        self.showCart = this.gameBaseService.showCart;
+        self.showCartSubscription = this.gameBaseService.showCartObservable
         .subscribe(showCart => {
             this.showCart = showCart;
         });
-        this.lottery = gameBaseService.getLottery();
+        self.lottery = gameBaseService.getLottery();
         const gameConfig = {
             lotteryId: '1',
             gameName_cn: '山东11选5',
@@ -43,6 +44,10 @@ export class Lt11x5Component implements OnDestroy, OnInit {
             currentNumber: '201805100929',
             currentNumberTime: 1525937335,
             currentTime: 1525937294,
+            traceMaxTimes: 120,
+            betMaxPrizeGroup: 1950,
+            betMinPrizeGroup: 1700,
+            userPrizeGroup: 1950,
             methodList: [
                 {
                     'id': '30',
@@ -1181,19 +1186,32 @@ export class Lt11x5Component implements OnDestroy, OnInit {
             ]
         };
         gameBaseService.setMethodCache(gameConfig.methodList);
-        this.lottery.setLotteryId(gameConfig.lotteryId);
-        this.lottery.setGameName_cn(gameConfig.gameName_cn);
-        this.lottery.setGameName_en(gameConfig.gameName_en);
-        this.lottery.setCurrentNumber(gameConfig.currentNumber);
-        this.lottery.setCurrentNumberTime(gameConfig.currentNumberTime);
-        this.lottery.setCurrentTime(gameConfig.currentTime);
-        this.lottery.setCurrentTime(gameConfig.currentTime);
-        this.lottery.setMethodList(gameConfig.methodList);
+        self.setGameConfig(gameConfig);
+    }
+    /**
+     * 游戏配置方法
+     * @param gameConfig 游戏配置
+     */
+    setGameConfig(gameConfig) {
+        const self = this;
+        // 基本玩法配置
+        self.lottery.setLotteryId(gameConfig.lotteryId);
+        self.lottery.setGameName_cn(gameConfig.gameName_cn);
+        self.lottery.setGameName_en(gameConfig.gameName_en);
+        self.lottery.setCurrentNumber(gameConfig.currentNumber);
+        self.lottery.setCurrentNumberTime(gameConfig.currentNumberTime);
+        self.lottery.setCurrentTime(gameConfig.currentTime);
+        self.lottery.setCurrentTime(gameConfig.currentTime);
+        self.lottery.setMethodList(gameConfig.methodList);
+        self.lottery.setBetMaxPrizeGroup(gameConfig.betMaxPrizeGroup);
+        self.lottery.setBetMinPrizeGroup(gameConfig.betMinPrizeGroup);
+        self.lottery.setUserPrizeGroup(gameConfig.userPrizeGroup);
+        self.lottery.setTraceMaxTimes(gameConfig.traceMaxTimes);
         // 默认玩法配置
-        this.lottery.setrCurrentMethodId(gameConfig.methodList[5]['id']);
-        this.lottery.setCurrentMethodName_cn(gameConfig.methodList[5]['name_cn']);
-        this.lottery.setCurrentPlayId(gameConfig.methodList[5].children[0].children[0]['id']);
-        this.lottery.setCurrentPlayName_cn(gameConfig.methodList[5].children[0].children[0]['name_cn']);
+        self.lottery.setrCurrentMethodId(gameConfig.methodList[5]['id']);
+        self.lottery.setCurrentMethodName_cn(gameConfig.methodList[5]['name_cn']);
+        self.lottery.setCurrentPlayId(gameConfig.methodList[5].children[0].children[0]['id']);
+        self.lottery.setCurrentPlayName_cn(gameConfig.methodList[5].children[0].children[0]['name_cn']);
     }
     /**
      * 动态创建组件
@@ -1208,6 +1226,8 @@ export class Lt11x5Component implements OnDestroy, OnInit {
             this.compRef.destroy();
         }
         this.compRef = this.playContainer && this.playContainer.createComponent(factory); // 创建组件
+        this.gameBaseService.playComRef = this.compRef;
+        console.log(this.compRef.instance.rebuildData);
     }
     /**
      * 监听子组件playID变化

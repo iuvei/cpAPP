@@ -1,22 +1,19 @@
 <div class="top_title" style="top:0px; background-color: #fff;z-index: 998;">
     <ul>
         <li style="width:10%">
-            <a href="javascript:void(0)" (click)="closeCart();" style="width:50px;text-align:center; height: 60px;line-height: 60px;margin: 0;padding: 0;top:0px;left:0px"><img src="/assets/images/back.jpg" style=" height: 18px;"></a>
+            <a href="javascript:void(0)" (click)="closeCart();" style="width:50px;text-align:center; height: 60px;line-height: 60px;margin: 0;padding: 0;top:0px;left:0px"><img src="./assets/images/back.jpg" style=" height: 18px;"></a>
         </li>
         <li style="width:50%" id="cargamename">
             <div style="margin-top:-10px">
-                <a id="numType" name="num3">三星</a>-<a href="#" id="gameType" name="num3_h3zx" title="玩法说明:" data-container="body" data-toggle="popover" data-placement="bottom" data-content="从第一位、第二位、第三位中至少各选择1个号码。">后三直选</a>
+                <a id="numType" name="num3">{{lottery.currentMethodName_cn}}</a>-
+                <a href="#" id="gameType" name="num3_h3zx" title="玩法说明:" data-container="body" data-toggle="popover" data-placement="bottom" data-content="从第一位、第二位、第三位中至少各选择1个号码。">{{lottery.currentPlayName_cn}}</a>
             </div>
             <div style="width:100%; float: left; margin-top: -37px;font-size: 14px;">
-                <p class="text-danger" style="color: #ee56a9;"><span id="qishu">20180524-021</span>期</p>
+                <p class="text-danger" style="color: #ee56a9;"><span id="qishu">{{lottery.currentNumber}}</span>期</p>
             </div>
         </li>
         <li style="width:40%">
-            <p class="text-danger" id="cartime" style="line-height:60px;font-size: 16px; text-align:center;">                        
-                <span id="hour_show" class="label label-primary">00</span>                          
-                <span id="minute_show" class="label label-primary">07</span>                          
-                <span id="second_show" class="label label-primary">44</span>                            
-            </p>					
+            <app-count-down></app-count-down>		
         </li>
     </ul>				
 </div>
@@ -26,10 +23,10 @@
             <button type="button" class="btn btn-primary" style="padding:7px 5px" (click)="closeCart();"><span class="glyphicon glyphicon-pushpin"></span> 自选号码</button>
         </li>
         <li style="width:33%">
-            <button type="button" class="btn btn-primary" style="padding:7px 5px" onclick="jixuan();"><span class="glyphicon glyphicon-random"></span> 机选一注</button>
+            <button type="button" class="btn btn-primary" style="padding:7px 5px" (click)="randomBetting();"><span class="glyphicon glyphicon-random"></span> 机选一注</button>
         </li>
         <li style="width:33%">
-            <button type="button" onclick="btnclosecarrow();" class="btn btn-danger" style="padding:7px 5px"><span class="glyphicon glyphicon-trash"></span> 清空列表</button>
+            <button type="button" (click)="clearCart();" class="btn btn-danger" style="padding:7px 5px"><span class="glyphicon glyphicon-trash"></span> 清空列表</button>
         </li>
     </ul>				
 </div>

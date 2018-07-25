@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ComponentRef } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 @Injectable()
 export class GameBaseService {
+    playComRef: ComponentRef<any>; //  加载的组件实例
     lottery: Lottery;
     // 当前注数
     numCount: number;
@@ -14,15 +15,25 @@ export class GameBaseService {
     showCartSource: Subject<boolean> = new Subject<boolean>();
     showCartObservable = this.showCartSource.asObservable();
     // 选球完成标识
-    public isBallsComplete: boolean;
+    isBallsComplete: boolean;
     // 元角分
-    public moneyUnit: number;
+    moneyUnit: number;
     // 玩法缓存
     methodCache: object;
     // 倍数
-    // 奖金组
-    prize_group: number;
     multiple: number;
+    // 是否追号
+    isTrace: boolean;
+    // 是否中奖停追
+    isWinStopTrace: boolean;
+    // 追号倍数
+    multipleTrace: number;
+    // 追号期数
+    issueTimesTrace: number;
+    // 最大追号倍数(购彩蓝专用)
+    maxTraceMultiple: number;
+    multipleSource: Subject<number> = new Subject<number>();
+    multipleObservable = this.multipleSource.asObservable();
     public getLottery() {
         return this.lottery;
     }
@@ -30,12 +41,18 @@ export class GameBaseService {
         this.lottery = lottery;
     }
     constructor() {
+        const self = this;
         // 初始化游戏对象
-        this.setLottery(new Lottery());
-        this.moneyUnit = 1;
-        this.multiple = 1;
-        this.numCount = 0;
-        this.numAmount = 0.00;
+        self.setLottery(new Lottery());
+        self.moneyUnit = 1;
+        self.multiple = 1;
+        self.numCount = 0;
+        self.numAmount = 0.00;
+        self.isWinStopTrace = true;
+        self.isTrace = false; // 是否追号
+        self.multipleTrace = 1; // 追号倍数
+        self.issueTimesTrace = 1; // 追号期数
+        self.maxTraceMultiple = 1; // 最大追号倍数
     }
     /**
      * 根据id得到玩法
@@ -62,9 +79,9 @@ export class GameBaseService {
      * 将玩法树状数据整理成两级缓存数据
      */
     setMethodCache(list) {
-        const getMethodList = list,
+        const self = this, getMethodList = list,
         nodeCache = {};
-        this.methodCache = {};
+        self.methodCache = {};
         for (const node1 of getMethodList) {
             node1['fullname_en'] = [node1['name_en']];
             node1['fullname_cn'] = [node1['name_cn']];
@@ -78,7 +95,7 @@ export class GameBaseService {
                         for (const node3 of node2['children']) {
                             node3['fullname_en'] = node2['fullname_en'].concat(node3['name_en']);
                             node3['fullname_cn'] = node2['fullname_cn'].concat(node3['name_cn']);
-                            this.methodCache['' + node3['id']] = node3;
+                            self.methodCache['' + node3['id']] = node3;
                         }
                     }
                 }
@@ -89,8 +106,9 @@ export class GameBaseService {
      * 改变购物车显示状态
      */
     changeCartStatus() {
-        this.showCart = !this.showCart;
-        this.showCartSource.next(this.showCart);
+        const self = this;
+        self.showCart = !self.showCart;
+        self.showCartSource.next(self.showCart);
     }
     /**
      * 改变选球数据
@@ -120,7 +138,7 @@ export class GameBaseService {
             self.setBallData(row, col, 1);
         }
         self.lottery.setBatchBound('none') ;
-        this.updateData();
+        self.updateData();
     }
     /**
      * 批量选球
@@ -284,53 +302,44 @@ export class GameBaseService {
         this.currentAmountDataSoucrce.next(currentAmountData);
     }
     /**
-     * 生成单注随机数
+     * 生成min<=num<=Max的数
      */
-    createRandomNum() {
-        const self = this,
-            current = [],
-            len = self.lottery.getBallsData().length,
-            rowLen = self.lottery.getBallsData()[0].length;
-        // 随机数
-        for (let k = 0; k < len; k++) {
-            current[k] = [Math.floor(Math.random() * rowLen)];
-            current[k].sort(function(a, b) {
-                return a > b ? 1 : -1;
-            });
-        }
-        return current;
-    }
+     randomNumBoth(Min, Max) {
+        const Range = Max - Min;
+        const Rand = Math.random();
+        const num = Min + Math.round(Rand * Range); // 四舍五入
+        return num;
+  }
     /**
-     * 限制随机投注重复
+     * 生成单注随机数
+     * @param isDw 是否定位
      */
-    checkRandomBets(hash = {}, times = 0) {
+    createRandomNum(isDw = false) {
+        // 某些小玩法组件有特殊机选方法时候执行
+        if (this.playComRef.instance.createRandomNum) {
+            this.playComRef.instance.createRandomNum();
+            return;
+        }
         const self = this,
-            allowTag = typeof hash === 'undefined' ? true : false,
-            len = self.lottery.getBallsData().length,
-            rowLen = self.lottery.getBallsData()[0].length;
-        let current = [];
-        // 生成单数随机数
-        current = self.createRandomNum();
-        // 如果大于限制数量
-        // 则直接输出
-        // if (Number(times) > Number(self.getRandomBetsNum())) {
-        //     return current;
-        // }
-        // 建立索引
-        // if (allowTag) {
-        //     for (let i = 0; i < order.length; i++) {
-        //         if (order[i]['type'] == me.defConfig.name) {
-        //             var name = order[i]['original'].join('');
-        //             hash[name] = name;
-        //         }
-        //     };
-        // }
-        // //对比结果
-        // if (hash[current.join('')]) {
-        //     times++;
-        //     return arguments.callee.call(me, hash, times);
-        // }
-        return current;
+        ballsData = self.lottery.getBallsData(),
+        len = ballsData.length,
+        rowLen = ballsData[0].length;
+        let x, y;
+        // 机选之前 清空选球
+        self.clearSelectBallPanel();
+        // 每行产生一个随机数
+        if (isDw) {
+            for (let i = 0; i < len; i++) {
+                y = self.randomNumBoth(0, rowLen - 1);
+                ballsData[i][y] = 1;
+            }
+        } else {
+            x = self.randomNumBoth(0, len - 1);
+            y = self.randomNumBoth(0, rowLen - 1);
+            ballsData[x][y] = 1;
+        }
+        console.log(ballsData);
+        self.updateData();
     }
     /**
      * 重构选球数据
@@ -414,6 +423,12 @@ export class Lottery {
     batchBound: string;
     // 批量选球按钮状态数组
     batchBoundArr: Array<object>;
+    // 最高奖金组
+    betMaxPrizeGroup: number;
+    // 最低奖金组
+    betMinPrizeGroup: number;
+    // 用户奖金组
+    userPrizeGroup: number;
     constructor() {
     }
     // getter／setter
@@ -507,5 +522,23 @@ export class Lottery {
     }
     public setBatchBoundArr(batchBoundArr: Array<object>) {
         this.batchBoundArr = batchBoundArr;
+    }
+    public getBetMaxPrizeGroup() {
+        return this.betMaxPrizeGroup;
+    }
+    public setBetMaxPrizeGroup(betMaxPrizeGroup: number) {
+        this.betMaxPrizeGroup = betMaxPrizeGroup;
+    }
+    public getBetMinPrizeGroup() {
+        return this.betMinPrizeGroup;
+    }
+    public setBetMinPrizeGroup(betMinPrizeGroup: number) {
+        this.betMinPrizeGroup = betMinPrizeGroup;
+    }
+    public getUserPrizeGroup() {
+        return this.userPrizeGroup;
+    }
+    public setUserPrizeGroup(userPrizeGroup: number) {
+        this.userPrizeGroup = userPrizeGroup;
     }
 }

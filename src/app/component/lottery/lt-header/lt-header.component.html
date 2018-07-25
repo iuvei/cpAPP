@@ -1,10 +1,10 @@
 <div class="head">
     <a class="arrow" href="/Index/main/">
-        <img src="/assets/images/back.jpg" style=" height: 18px;">
+        <img src="./assets/images/back.jpg" style=" height: 18px;">
     </a>
     <div class="hade_title" (click)="ctrlSlideDiv(show_slide_div)">
         <span id="hade_title">{{lottery.gameName_cn}}</span>
-        <img src="/assets/images/up.jpg">
+        <img src="./assets/images/up.jpg">
     </div>
     <div style="position: absolute; right: 0px; top: 0px; float: right;width: 110px;text-align: right; padding: 0;font-size: 16px;">
         <a href="/Index/ltbill/">
@@ -30,11 +30,7 @@
 <div class="top_title">
     <ul>
         <li style="width:32%">
-            <p class="text-danger" style="line-height: 60px;font-size: 16px; text-align:center;">
-                <span id="hour_show" class="label label-primary">00</span>
-                <span id="minute_show" class="label label-primary">09</span>
-                <span id="second_show" class="label label-primary">49</span>
-            </p>
+            <app-count-down></app-count-down>
             <!--  <div class="rad-prg" id="indicatorContainer9"></div> -->
         </li>
         <li style="width:40%">
@@ -45,7 +41,7 @@
             </div>
             <div style="width:100%; float: left; margin-top: -37px;font-size: 14px;">
                 <p class="text-danger" style="color: #ee56a9;">
-                    <span id="qishu">20180504-035</span>期</p>
+                    <span id="qishu">{{lottery.currentNumber}}</span>期</p>
             </div>
         </li>
         <li style="width:28%">

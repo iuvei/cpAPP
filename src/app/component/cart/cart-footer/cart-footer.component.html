@@ -1,24 +1,25 @@
 <div class="footer_div fixed_bot">
     <div class="reslut">
         <div style="float: left;width:41%;padding: 10px 2px">
-            <button id="btnZhuiHao" type="button" class="btn btn-primary" style="padding:6px 4px;width:45%">追号
+            <button  (click) = "traceEvent()" type="button" class="btn btn-primary" style="padding:6px 4px;width:45%">追号
                 <span class="glyphicon glyphicon-share-alt"></span>
             </button>
-            <input type="checkbox" id="inputZTZ" value="1" checked="checked" data-three-state="false" style="display: none;">
-            <label id="labelZTZ" class="cbx-label" for="inputZTZ" style="font-size: 12px; display: none;">中奖停追</label>
+            <input [hidden]="!isTrace"  type="checkbox" [checked]="isWinStopTrace" (change)="changeWinStop()" data-three-state="false">
+            <label [hidden]="!isTrace" class="cbx-label" for="inputZTZ" style="font-size: 12px;">中奖停追</label>
         </div>
-        <div id="div_qsZH" style="float: right; width: 28%; padding: 10px 2px; display: none;">
+        <!-- 追号期数 -->
+        <div [hidden]="!isTrace" style="float: right; width: 28%; padding: 10px 2px;">
             <div class="col-xs-10" style="text-align: right;margin: 0;padding: 0;">
                 <div class="input-group">
                     <span class="input-group-btn">
-                        <button id="qishu_outZH" class="btn btn-default" type="button" style="width: 14px;">
+                        <button (click)="reduceIssueTimesTrace()" class="btn btn-default" type="button" style="width: 14px;">
                             <span class="glyphicon glyphicon-minus" style="margin-left:-7px"></span>
                         </button>
                     </span>
-                    <input id="qishuZH" type="text" onkeyup="this.value = this.value.replace(/\D/g, '')" class="form-control" value="1" style="text-align:left;padding:1px;">
+                    <input [(ngModel)]="issueTimesTrace" (keyup)="issueKeyUp($event)" (blur)="issueBlur($event)"  type="text"  class="form-control" style="text-align:left;padding:1px;">
 
                     <span class="input-group-btn">
-                        <button id="qishu_inZH" class="btn btn-default" type="button" style="width: 14px;">
+                        <button (click)="addIssueTimesTrace()" class="btn btn-default" type="button" style="width: 14px;">
                             <span class="glyphicon glyphicon-plus" style="margin-left:-7px"></span>
                         </button>
                     </span>
@@ -27,17 +28,18 @@
             </div>
             <label style="float: right; margin-top: 8px">期 </label>
         </div>
-        <div id="div_bsZH" style="float: right; width: 31%; padding: 10px 2px; display: none;">
+        <!-- 追号倍数 -->
+        <div [hidden]="!isTrace" style="float: right; width: 31%; padding: 10px 2px;">
             <div class="col-xs-10" style="text-align: right;margin: 0;padding: 0;">
                 <div class="input-group">
                     <span class="input-group-btn">
-                        <button id="bs_outZH" class="btn btn-default" type="button" style="width: 14px;">
+                        <button (click)="reduceMultipleTrace()" class="btn btn-default" type="button" style="width: 14px;">
                             <span class="glyphicon glyphicon-minus" style="margin-left:-7px"></span>
                         </button>
                     </span>
-                    <input id="beishuZH" onkeyup="this.value = this.value.replace(/\D/g, '')" type="text" class="form-control" value="1" style="text-align:left;padding:1px;">
+                    <input  [(ngModel)]="multipleTrace" (keyup)="multipleKeyUp($event)" (blur)="multipleBlur($event)" type="text" class="form-control" style="text-align:left;padding:1px;">
                     <span class="input-group-btn">
-                        <button id="bs_inZH" class="btn btn-default" type="button" style="width: 14px;">
+                        <button (click)="addMultipleTrace()" class="btn btn-default" type="button" style="width: 14px;">
                             <span class="glyphicon glyphicon-plus" style="margin-left:-7px"></span>
                         </button>
                     </span>
@@ -50,10 +52,10 @@
 
     <div class="bottom">
         <div class="suminfo" style="padding-top:15px; font-size: 16px">共计
-            <span class="num" id="numCountLast">4</span>注
-            <span id="numPriceLast" class="num_price">38.0000</span>元</div>
+            <span class="num" id="numCountLast">{{bettings.length}}</span>注
+            <span id="numPriceLast" class="num_price">{{cartTotal | number: '1.4-5'}}</span>元</div>
         <div style="height:55px; padding: 10px 3px; float: right; width:30%">
-            <button type="button" class="btn btn-danger" style="padding:6px 10px;width:100%" onclick="btnbuyGo();">
+            <button type="button" class="btn btn-danger" style="padding:6px 10px;width:100%" onclick="showSubmitData();">
                 <span class="glyphicon glyphicon-shopping-cart"></span> 确认购买</button>
         </div>
     </div>

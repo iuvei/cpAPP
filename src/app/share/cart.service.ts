@@ -3,17 +3,13 @@ import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class CartService {
-    bettings: Betting[];
-    cartTotal: number;
+    bettings: Betting[]; // 购彩蓝数据
     bettingID: number;
-    private bettingAddedSource = new Subject<any>();
-    bettingAdded$ = this.bettingAddedSource.asObservable();
-    bettingsSoucrce: Subject<object> = new Subject<object>();
+    bettingsSoucrce: Subject<any> = new Subject<any>();
     bettingsDataObservable = this.bettingsSoucrce.asObservable();
     cartTotalSoucrce: Subject<object> = new Subject<object>();
     cartTotalObservable = this.cartTotalSoucrce.asObservable();
     constructor() {
-        this.cartTotal = 0;
         this.bettings = [];
         this.bettingID = 1;
      }
@@ -29,19 +25,35 @@ export class CartService {
             // 发现有相同注，则增加倍数
             if (sameIndex !== -1) {
                 console.log('您选择的号码在号码篮已存在，将直接进行倍数累加');
-                this.addMultiple(currentBet['multiple'], sameIndex, currentBet['maxMultiple']);
+                self.addMultiple(currentBet['multiple'], sameIndex, currentBet['maxMultiple']);
                 return;
             }
             // 新增唯一id标识
-            currentBet['id'] = this.bettingID++;
+            currentBet['id'] = self.bettingID++;
             // 原始选球数据
             currentBet['postParameter'] = this.makePostParameter(currentBet['original']);
             // 倍数备份，用于恢复原始选择的倍数
             currentBet['oldMultiple'] = currentBet['multiple'];
-            this.bettings.unshift(currentBet);
-            this.bettingsSoucrce.next(this.bettings);
+            self.bettings.unshift(currentBet);
+            self.bettingsSoucrce.next(self.bettings);
             console.log(this.bettings);
         }
+    }
+    /**
+     * 清空购彩蓝
+     */
+    clearCart() {
+        const self = this;
+        self.bettings = [];
+        self.bettingsSoucrce.next(self.bettings);
+    }
+    /**
+     * 删除购彩蓝某行数据
+     */
+    deleteCartRow(index: number) {
+        const self = this, bettings = self.bettings;
+        bettings.splice(index, 1);
+        self.bettingsSoucrce.next(bettings);
     }
     /**
      * 生成原始选球数据

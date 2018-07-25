@@ -8,18 +8,22 @@ import { Subscription } from 'rxjs/Subscription';
     styleUrls: ['./lt-footer.component.css']
 })
 export class LtFooterComponent implements OnInit {
-    numCount: number;
-    numAmount: number;
+    numCount: number; // 当前选球注数
+    numAmount: number; // 当前投注金额
+    multiple: number;   // 倍数
+    cartTotal: number;
     amountSubscription: Subscription;
     bettingSubscription: Subscription;
     constructor(private gameBaseService: GameBaseService, private cartService: CartService) {
         const self = this;
-        this.numCount = this.gameBaseService.numCount;
-        this.numAmount = this.gameBaseService.numAmount;
-        this.amountSubscription = this.gameBaseService.currentAmountDataObservable
+        self.numCount = self.gameBaseService.numCount;
+        self.numAmount = self.gameBaseService.numAmount;
+        self.multiple = self.gameBaseService.multiple;
+        // 选球金额和注数
+        self.amountSubscription = self.gameBaseService.currentAmountDataObservable
         .subscribe(data => {
-            this.numCount = data['numCount'];
-            this.numAmount = data['numAmount'];
+            self.numCount = data['numCount'];
+            self.numAmount = data['numAmount'];
             }
         );
     }
@@ -52,10 +56,10 @@ export class LtFooterComponent implements OnInit {
                 maxMultiple = this.gameBaseService.getLimitByPlayId(playId),
                 singlePrice = this.gameBaseService.getOnePriceById(playId),
                 original = this.gameBaseService.getOriginal(),
-                prize_group = this.gameBaseService.prize_group,
+                prize_group = lotteryObj.getUserPrizeGroup(),
                 cloneFullname_cn = this.gameBaseService.getPlayById(playId)['fullname_cn'].concat(),
-                type = cloneFullname_cn.splice(1, 2).join('-');
-        const currentBet: Betting = this.cartService.getBetting();
+                type = cloneFullname_cn.splice(1, 2).join('-'),
+                currentBet: Betting = this.cartService.getBetting();
         currentBet.playId = playId;
         currentBet.original = original;
         currentBet.amount = amount;
@@ -75,5 +79,82 @@ export class LtFooterComponent implements OnInit {
      */
     gotoCart() {
         this.gameBaseService.changeCartStatus();
+    }
+    /**
+     * 生成随机投注号码
+     */
+    createRandomNum(num = 1) {
+        const self = this;
+        self.gameBaseService.createRandomNum();
+    }
+    /**
+     * 增加倍数
+     */
+    addMultiple() {
+        const self = this,
+        lotteryObj = self.gameBaseService.getLottery(),
+        playId = lotteryObj.getCurrentPlayId(),
+        maxMultiple = self.gameBaseService.getLimitByPlayId(playId);
+        if (maxMultiple <= self.multiple) {
+            return;
+        }
+        self.multiple++;
+        self.gameBaseService.multiple = self.multiple;
+    }
+    /**
+     * 减少倍数
+     */
+    reduceMultipe() {
+        const self = this,
+        lotteryObj = self.gameBaseService.getLottery(),
+        playId = lotteryObj.getCurrentPlayId(),
+        maxMultiple = self.gameBaseService.getLimitByPlayId(playId);
+        if (1 >= self.multiple) {
+            return;
+        }
+        self.multiple--;
+        self.gameBaseService.multiple = self.multiple;
+    }
+    /**
+     * 倍数keyup
+     * @param event 事件
+     */
+    multipeKeyUp(event: any) {
+        const self = this,
+        lotteryObj = self.gameBaseService.getLottery(),
+        playId = lotteryObj.getCurrentPlayId(),
+        maxMultiple = self.gameBaseService.getLimitByPlayId(playId);
+        console.log(event.target.value);
+        let v = event.target.value;
+        if (Number(v)) {
+            v = Number(v) > maxMultiple ? maxMultiple : Number(v);
+            this.multiple = v;
+            self.gameBaseService.multiple = self.multiple;
+        }
+    }
+    /**
+     * 倍数blur
+     * @param event 事件
+     */
+    multipeBlur(event: any) {
+        const self = this,
+        lotteryObj = self.gameBaseService.getLottery(),
+        playId = lotteryObj.getCurrentPlayId(),
+        maxMultiple = self.gameBaseService.getLimitByPlayId(playId);
+        let v = event.target.value || 0;
+        if (Number(v)) {
+            v = Number(v) > maxMultiple ? maxMultiple : Number(v);
+        } else {
+            v = 1;
+        }
+        this.multiple = v;
+        self.gameBaseService.multiple = self.multiple;
+    }
+    /**
+     * 元角分下拉框选择
+     */
+    moneyUnitChange(event: any) {
+        const v = event.target.value;
+        this.gameBaseService.moneyUnit = v;
     }
 }

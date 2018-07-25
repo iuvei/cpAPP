@@ -10,9 +10,9 @@ import { GameBaseService, Lottery } from '../../../share/game-base.service';
     ]
 })
 export class LtHeaderComponent implements OnInit {
-    private slideState: String;
-    private show_slide_div: Boolean;
-    private currentPlayArr: Array<any>;
+    public slideState: String;
+    public show_slide_div: Boolean;
+    public currentPlayArr: Array<any>;
     // @Input() methodList: any;
     // @Input() gameName_cn: string;
     // @Input() currentMethodId: string;
@@ -21,10 +21,10 @@ export class LtHeaderComponent implements OnInit {
     // @Input() currentPlayArr: Array<any>;
     // @Input() currentPlayName_cn: string;
     @Input() lottery: Lottery;
-    private methodList: any;
+    public methodList: any;
     @Output() playChange = new EventEmitter();
     constructor(private gameBaseService: GameBaseService) {
-        this.slideState = 'false';
+        this.slideState = 'hide';
         this.show_slide_div = false;
     }
     ngOnInit() {
@@ -46,7 +46,7 @@ export class LtHeaderComponent implements OnInit {
     /**
      * 玩法区域显示/隐藏方法
      */
-    ctrlSlideDiv(show_slide_div: boolean) {
+    ctrlSlideDiv(show_slide_div: Boolean) {
         if (this.show_slide_div) {
             this.slideState = 'show';
         } else {
